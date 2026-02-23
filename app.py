@@ -7,7 +7,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 
 # Secret key
-app.config["SECRET_KEY"] = "your_secret_key_here"
+app.config["SECRET_KEY"] = "pigpeople_secret_key"
 
 # Database
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///pigpeople.db"
@@ -20,7 +20,7 @@ login_manager = LoginManager()
 login_manager.login_view = "login"
 login_manager.init_app(app)
 
-# User Model
+# User model
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True, nullable=False)
@@ -69,7 +69,7 @@ def logout():
     logout_user()
     return redirect(url_for("login"))
 
-# Render port fix
+# Run on Render
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
