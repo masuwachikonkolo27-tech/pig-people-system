@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="row mb-4">
+
+    <div class="col-md-4">
+        <div class="card text-white bg-success shadow">
+            <div class="card-body">
+                <h5>Total Sales</h5>
+                <h3>ZMW {{ total_sales }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card text-white bg-danger shadow">
+            <div class="card-body">
+                <h5>Total Expenses</h5>
+                <h3>ZMW {{ total_expenses }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card text-white bg-primary shadow">
+            <div class="card-body">
+                <h5>Profit</h5>
+                <h3>ZMW {{ profit }}</h3>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<hr>
+
+<h4>Add Pig</h4>
+<form method="POST" action="/add_pig" class="row g-3 mb-4">
+    <div class="col-md-4">
+        <input type="number" step="0.1" name="weight" class="form-control" placeholder="Weight (kg)" required>
+    </div>
+    <div class="col-md-4">
+        <input type="number" name="age" class="form-control" placeholder="Age (months)" required>
+    </div>
+    <div class="col-md-4">
+        <button class="btn btn-dark w-100">Add Pig</button>
+    </div>
+</form>
+
+<h4>Add Sale</h4>
+<form method="POST" action="/add_sale" class="row g-3 mb-4">
+    <div class="col-md-6">
+        <input type="number" name="pig_id" class="form-control" placeholder="Pig ID" required>
+    </div>
+    <div class="col-md-6">
+        <input type="number" step="0.01" name="amount" class="form-control" placeholder="Sale Amount" required>
+    </div>
+    <div class="col-md-12">
+        <button class="btn btn-success w-100">Add Sale</button>
+    </div>
+</form>
+
+<h4>Add Expense</h4>
+<form method="POST" action="/add_expense" class="row g-3 mb-4">
+    <div class="col-md-6">
+        <input type="text" name="description" class="form-control" placeholder="Description" required>
+    </div>
+    <div class="col-md-6">
+        <input type="number" step="0.01" name="amount" class="form-control" placeholder="Expense Amount" required>
+    </div>
+    <div class="col-md-12">
+        <button class="btn btn-danger w-100">Add Expense</button>
+    </div>
+</form>
+
+<hr>
+
+<h4>All Pigs</h4>
+<table class="table table-bordered table-striped shadow">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Weight</th>
+            <th>Age</th>
+            <th>Date Added</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for pig in pigs %}
+        <tr>
+            <td>{{ pig.id }}</td>
+            <td>{{ pig.weight }} kg</td>
+            <td>{{ pig.age }} months</td>
+            <td>{{ pig.date_added.strftime('%Y-%m-%d') }}</td>
+            <td>
+                <a href="/delete_pig/{{ pig.id }}" class="btn btn-sm btn-danger">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
