@@ -1,7 +1,7 @@
 import os
 from flask import Flask, render_template, redirect, url_for, request, flash
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
@@ -68,6 +68,20 @@ def dashboard():
 def logout():
     logout_user()
     return redirect(url_for("login"))
+
+# Create Admin (Temporary)
+@app.route("/create_admin")
+def create_admin():
+    existing_user = User.query.filter_by(username="admin").first()
+
+    if not existing_user:
+        hashed_password = generate_password_hash("1234", method="pbkdf2:sha256")
+        new_user = User(username="admin", password=hashed_password)
+        db.session.add(new_user)
+        db.session.commit()
+        return "Admin user created successfully!"
+    else:
+        return "Admin already exists."
 
 # Run on Render
 if __name__ == "__main__":
