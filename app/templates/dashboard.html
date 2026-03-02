@@ -1,0 +1,310 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+
+/* ===== EXECUTIVE MODERN DASHBOARD ===== */
+
+body {
+    background: #0b1220;
+    color: #e2e8f0;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* Title */
+.dashboard-title {
+    font-weight: 600;
+    margin-bottom: 35px;
+    color: #ffffff;
+}
+
+/* Cards */
+.glass-card {
+    background: #111c2e;
+    border-radius: 14px;
+    border: 1px solid #1f2a40;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+    transition: 0.25s ease;
+}
+
+.glass-card:hover {
+    transform: translateY(-2px);
+}
+
+/* Folder Headers */
+.folder-header {
+    cursor: pointer;
+    font-weight: 600;
+    padding: 12px 15px;
+    background: #16233a;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    transition: 0.2s ease;
+}
+
+.folder-header:hover {
+    background: #1d2d4a;
+}
+
+/* Tables */
+.table-futuristic {
+    color: #e2e8f0;
+}
+
+.table-futuristic th {
+    background: #16233a;
+    border-bottom: 2px solid #233554;
+    font-weight: 600;
+}
+
+.table-futuristic td {
+    border-top: 1px solid #233554;
+}
+
+.table-futuristic tr:hover {
+    background: #1a2942;
+}
+
+/* Forms */
+.form-control, .form-select {
+    background: #0b1220;
+    border: 1px solid #1f2a40;
+    color: #e2e8f0;
+}
+
+.form-control:focus, .form-select:focus {
+    background: #0b1220;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 0.15rem rgba(59,130,246,0.3);
+    color: white;
+}
+
+/* Buttons */
+.btn-modern {
+    border-radius: 8px;
+    font-weight: 500;
+    padding: 6px 14px;
+}
+
+.section-content {
+    display: none;
+}
+
+.summary-card h3 {
+    font-weight: 700;
+}
+
+</style>
+
+<h2 class="dashboard-title">Executive Dashboard</h2>
+
+{% if current_user.role == 'admin' %}
+
+<!-- SUMMARY CARDS -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="glass-card p-4 summary-card">
+            <h6>Total Sales</h6>
+            <h3 style="color:#22c55e;">{{ total_sales | zmw }}</h3>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="glass-card p-4 summary-card">
+            <h6>Total Expenses</h6>
+            <h3 style="color:#ef4444;">{{ total_expenses | zmw }}</h3>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="glass-card p-4 summary-card">
+            <h6>Net Profit</h6>
+            <h3 style="color:#3b82f6;">{{ profit | zmw }}</h3>
+        </div>
+    </div>
+</div>
+
+<div class="glass-card p-4 mb-4">
+    <canvas id="profitChart"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+var ctx = document.getElementById('profitChart').getContext('2d');
+
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ['Sales', 'Expenses'],
+        datasets: [{
+            data: [{{ total_sales }}, {{ total_expenses }}],
+            backgroundColor: ['#22c55e', '#ef4444']
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+            x: { ticks: { color: "#e2e8f0" } },
+            y: { ticks: { color: "#e2e8f0" } }
+        }
+    }
+});
+</script>
+
+{% endif %}
+
+<!-- ================= PIG MANAGEMENT ================= -->
+<div class="folder-header" onclick="toggleSection('pigsSection')">
+    🐖 Pig Management
+</div>
+
+<div id="pigsSection" class="section-content">
+
+    <div class="glass-card p-4 mb-4">
+        <h5>Add Pig</h5>
+        <form method="POST" action="{{ url_for('add_pig') }}">
+            <div class="row">
+                <div class="col"><input type="text" name="name" class="form-control" placeholder="Pig Name" required></div>
+                <div class="col"><input type="text" name="breed" class="form-control" placeholder="Breed" required></div>
+                <div class="col"><input type="number" step="0.01" name="weight" class="form-control" placeholder="Weight" required></div>
+                <div class="col"><input type="number" name="age" class="form-control" placeholder="Age (months)" required></div>
+                <div class="col">
+                    <button type="submit" class="btn btn-modern" style="background:#22c55e; color:white;">Add</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="glass-card p-4 mb-4">
+        <h5>All Pigs</h5>
+        <table class="table table-futuristic">
+            <tr>
+                <th>ID</th><th>Name</th><th>Breed</th><th>Weight</th><th>Age</th><th>Actions</th>
+            </tr>
+            {% for pig in pigs %}
+            <tr>
+                <td>{{ pig.id }}</td>
+                <td>{{ pig.name }}</td>
+                <td>{{ pig.breed }}</td>
+                <td>{{ pig.weight }}</td>
+                <td>{{ pig.age }}</td>
+                <td>
+                    <a href="{{ url_for('edit_pig', id=pig.id) }}" class="btn btn-warning btn-sm btn-modern">Edit</a>
+                    <a href="{{ url_for('delete_pig', id=pig.id) }}" class="btn btn-danger btn-sm btn-modern"
+                       onclick="return confirm('Delete this pig?')">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+</div>
+
+<!-- ================= SALES ================= -->
+<div class="folder-header" onclick="toggleSection('salesSection')">
+    💰 Sales Management
+</div>
+
+<div id="salesSection" class="section-content">
+
+    <div class="glass-card p-4 mb-4">
+        <h5>Add Sale</h5>
+        <form method="POST" action="{{ url_for('add_sale') }}">
+            <div class="row">
+                <div class="col">
+                    <select name="pig_id" class="form-control" required>
+                        <option value="">Select Pig</option>
+                        {% for pig in pigs %}
+                        <option value="{{ pig.id }}">{{ pig.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col"><input type="text" name="description" class="form-control" placeholder="Description" required></div>
+                <div class="col"><input type="number" step="0.01" name="amount" class="form-control" placeholder="Amount" required></div>
+                <div class="col">
+                    <button type="submit" class="btn btn-modern" style="background:#3b82f6; color:white;">Add</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="glass-card p-4 mb-4">
+        <h5>All Sales</h5>
+        <table class="table table-futuristic">
+            <tr>
+                <th>ID</th><th>Pig</th><th>Description</th><th>Amount</th><th>User</th><th>Actions</th>
+            </tr>
+            {% for sale in sales %}
+            <tr>
+                <td>{{ sale.id }}</td>
+                <td>{{ sale.pig_id }}</td>
+                <td>{{ sale.description }}</td>
+                <td>{{ sale.amount | zmw }}</td>
+                <td>{{ sale.seller.username }}</td>
+                <td>
+                    <a href="{{ url_for('edit_sale', id=sale.id) }}" class="btn btn-warning btn-sm btn-modern">Edit</a>
+                    <a href="{{ url_for('delete_sale', id=sale.id) }}" class="btn btn-danger btn-sm btn-modern"
+                       onclick="return confirm('Delete this sale?')">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+</div>
+
+<!-- ================= EXPENSES ================= -->
+<div class="folder-header" onclick="toggleSection('expenseSection')">
+    📉 Expense Management
+</div>
+
+<div id="expenseSection" class="section-content">
+
+    <div class="glass-card p-4 mb-4">
+        <h5>Add Expense</h5>
+        <form method="POST" action="{{ url_for('add_expense') }}">
+            <div class="row">
+                <div class="col"><input type="text" name="description" class="form-control" placeholder="Description" required></div>
+                <div class="col"><input type="number" step="0.01" name="amount" class="form-control" placeholder="Amount" required></div>
+                <div class="col">
+                    <button type="submit" class="btn btn-modern" style="background:#ef4444; color:white;">Add</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="glass-card p-4 mb-4">
+        <h5>All Expenses</h5>
+        <table class="table table-futuristic">
+            <tr>
+                <th>ID</th><th>Description</th><th>Amount</th><th>User</th><th>Actions</th>
+            </tr>
+            {% for expense in expenses %}
+            <tr>
+                <td>{{ expense.id }}</td>
+                <td>{{ expense.description }}</td>
+                <td>{{ expense.amount | zmw }}</td>
+                <td>{{ expense.spender.username }}</td>
+                <td>
+                    <a href="{{ url_for('edit_expense', id=expense.id) }}" class="btn btn-warning btn-sm btn-modern">Edit</a>
+                    <a href="{{ url_for('delete_expense', id=expense.id) }}" class="btn btn-danger btn-sm btn-modern"
+                       onclick="return confirm('Delete this expense?')">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+</div>
+
+<script>
+function toggleSection(id) {
+    var section = document.getElementById(id);
+    section.style.display = section.style.display === "none" || section.style.display === "" 
+        ? "block" 
+        : "none";
+}
+</script>
+
+{% endblock %}

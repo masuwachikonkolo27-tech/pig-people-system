@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3 class="mb-4">Pig Management</h3>
+
+<div class="card p-3 mb-4 shadow">
+    <h5>Add Pig</h5>
+    <form method="POST" action="{{ url_for('main.add_pig') }}">
+        <div class="row">
+            <div class="col">
+                <input name="breed" class="form-control" placeholder="Breed" required>
+            </div>
+            <div class="col">
+                <input name="weight" class="form-control" placeholder="Weight (kg)" required>
+            </div>
+            <div class="col">
+                <input name="age" class="form-control" placeholder="Age (months)" required>
+            </div>
+            <div class="col">
+                <button class="btn btn-success w-100">Add</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="card shadow">
+    <div class="card-body">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Breed</th>
+                    <th>Weight</th>
+                    <th>Age</th>
+                    <th>Date Added</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pig in pigs %}
+                <tr>
+                    <td>{{ pig.id }}</td>
+                    <td>{{ pig.breed }}</td>
+                    <td>{{ pig.weight }} kg</td>
+                    <td>{{ pig.age }}</td>
+                    <td>{{ pig.date_added.strftime("%Y-%m-%d") }}</td>
+                    <td>
+                        <a href="{{ url_for('main.edit_pig', id=pig.id) }}" class="btn btn-sm btn-warning">Edit</a>
+
+                        {% if current_user.role == "admin" %}
+                        <a href="{{ url_for('main.delete_pig', id=pig.id) }}" class="btn btn-sm btn-danger">Delete</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" class="text-center">No pigs added yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

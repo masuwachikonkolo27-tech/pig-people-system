@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3 class="mt-3">All Sales</h3>
+
+<table class="table table-bordered mt-3">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Pig ID</th>
+            <th>Amount (ZMW)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for sale in sales %}
+        <tr>
+            <td>{{ sale.id }}</td>
+            <td>{{ sale.pig_id }}</td>
+            <td>ZMW {{ sale.amount }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

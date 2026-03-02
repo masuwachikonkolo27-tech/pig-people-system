@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>All Pigs - Pig People Pro</title>
+</head>
+<body>
+
+    <h1>🐖 Registered Pigs</h1>
+
+    <a href="/dashboard">⬅ Back to Dashboard</a> |
+    <a href="/add_pig">Register New Pig</a> |
+    <a href="/logout">Logout</a>
+
+    <hr>
+
+    <table border="1" cellpadding="8">
+        <tr>
+            <th>ID</th>
+            <th>Pig ID</th>
+            <th>Breed</th>
+            <th>Age (Months)</th>
+            <th>Actions</th>
+        </tr>
+
+        {% for pig in pigs %}
+        <tr>
+            <td>{{ pig[0] }}</td>
+            <td>{{ pig[1] }}</td>
+            <td>{{ pig[2] }}</td>
+            <td>{{ pig[3] }}</td>
+            <td>
+                <a href="/edit_pig/{{ pig[0] }}">Edit</a> |
+                <a href="/delete_pig/{{ pig[0] }}">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+
+    </table>
+
+</body>
+</html>

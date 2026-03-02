@@ -1,6 +1,4 @@
-flask
-flask_sqlalchemy
-flask_login
+Flask
+Flask-SQLAlchemy
+Flask-Login
 gunicorn
-reportlab
-werkzeug

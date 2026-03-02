@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3>Edit Pig</h3>
+
+<div class="card p-4 shadow">
+    <form method="POST">
+        <div class="mb-3">
+            <label>Breed</label>
+            <input name="breed" value="{{ pig.breed }}" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label>Weight (kg)</label>
+            <input name="weight" value="{{ pig.weight }}" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label>Age (months)</label>
+            <input name="age" value="{{ pig.age }}" class="form-control" required>
+        </div>
+
+        <button class="btn btn-primary">Update Pig</button>
+        <a href="{{ url_for('main.pigs') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+
+{% endblock %}

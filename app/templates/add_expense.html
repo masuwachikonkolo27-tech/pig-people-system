@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card p-4 mt-4 shadow">
+
+    <h3 class="mb-4">Record Expense</h3>
+
+    <form method="POST">
+
+        <div class="mb-3">
+            <label class="form-label">Description</label>
+            <input type="text"
+                   name="description"
+                   class="form-control"
+                   placeholder="Example: Pig feed purchase"
+                   required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Amount</label>
+            <input type="number"
+                   step="0.01"
+                   name="amount"
+                   class="form-control"
+                   required>
+        </div>
+
+        <button type="submit" class="btn btn-success">
+            Save Expense
+        </button>
+
+        <a href="{{ url_for('dashboard') }}"
+           class="btn btn-secondary">
+            Cancel
+        </a>
+
+    </form>
+
+</div>
+
+{% endblock %}
